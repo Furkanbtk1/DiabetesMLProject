@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Risk Prediction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2332;
+            --bg-card: #252f3f;
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #4ade80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .form-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .form-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--accent) 0%, #16a34a 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 1.5rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-card {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .result-card.visible {
+            display: block;
+        }
+
+        .result-card.insuff-weight {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .result-card.normal-weight {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: var(--accent);
+        }
+
+        .result-card.overweight {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--warning);
+        }
+
+        .result-card.obesity {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+
+        .result-card h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card.insuff-weight h3 { color: #3b82f6; }
+        .result-card.normal-weight h3 { color: var(--accent); }
+        .result-card.overweight h3 { color: var(--warning); }
+        .result-card.obesity h3 { color: var(--danger); }
+
+        .result-card .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            opacity: 0.85;
+        }
+
+        .result-card.insuff-weight .result-label { color: #3b82f6; }
+        .result-card.normal-weight .result-label { color: var(--accent); }
+        .result-card.overweight .result-label { color: var(--warning); }
+        .result-card.obesity .result-label { color: var(--danger); }
+
+        .result-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Diabetes Risk Prediction</h1>
+            <p>Enter your lifestyle and health information to assess diabetes risk</p>
+        </header>
+
+        <form id="predictionForm" class="form-card">
+            <div class="form-section">
+                <h3>Basic Information</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="Age">Age (years)</label>
+                        <input type="number" id="Age" name="Age" placeholder="e.g. 25" step="0.1" min="1" max="120" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Height">Height (m)</label>
+                        <input type="number" id="Height" name="Height" placeholder="e.g. 1.75" step="0.01" min="0.5" max="2.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Weight">Weight (kg)</label>
+                        <input type="number" id="Weight" name="Weight" placeholder="e.g. 70" step="0.1" min="20" max="300" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="family_history">Family history of obesity</label>
+                        <select id="family_history" name="family_history" required>
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Eating Habits</h3>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="FAVC">Frequent consumption of high caloric food</label>
+                        <select id="FAVC" name="FAVC" required>
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="FCVC">Vegetable consumption frequency (1–3)</label>
+                        <input type="number" id="FCVC" name="FCVC" placeholder="1–3" step="0.1" min="1" max="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="CAEC">Food consumption between meals</label>
+                        <select id="CAEC" name="CAEC" required>
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="Sometimes">Sometimes</option>
+                            <option value="Frequently">Frequently</option>
+                            <option value="Always">Always</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="CH2O">Daily water consumption (liters)</label>
+                        <input type="number" id="CH2O" name="CH2O" placeholder="e.g. 2" step="0.1" min="0" max="10" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="SCC">Monitor calorie consumption</label>
+                        <select id="SCC" name="SCC" required>
+                            <option value="">Select...</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="CALC">Alcohol consumption</label>
+                        <select id="CALC" name="CALC" required>
+                            <option value="">Select...</option>
+                            <option value="no">No</option>
+                            <option value="Sometimes">Sometimes</option>
+                            <option value="Frequently">Frequently</option>
+                            <option value="Always">Always</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Physical Activity & Lifestyle</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="FAF">Physical activity frequency (0–3)</label>
+                        <input type="number" id="FAF" name="FAF" placeholder="0–3" step="0.1" min="0" max="3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="TUE">Time using technology devices (0–2)</label>
+                        <input type="number" id="TUE" name="TUE" placeholder="0–2" step="0.1" min="0" max="2" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="MTRANS">Main transportation</label>
+                        <select id="MTRANS" name="MTRANS" required>
+                            <option value="">Select...</option>
+                            <option value="Automobile">Automobile</option>
+                            <option value="Bike">Bike</option>
+                            <option value="Motorbike">Motorbike</option>
+                            <option value="Public_Transportation">Public Transportation</option>
+                            <option value="Walking">Walking</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Predict Diabetes Risk</button>
+        </form>
+
+        <div id="resultCard" class="result-card">
+            <div class="result-label" id="resultLabel"></div>
+            <h3 id="resultTitle"></h3>
+            <p id="resultText"></p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultCard = document.getElementById('resultCard');
+        const resultLabel = document.getElementById('resultLabel');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultText = document.getElementById('resultText');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const CATEGORY_LABELS = [
+            'Insufficient_Weight',
+            'Normal_Weight',
+            'Obesity_Type_I',
+            'Obesity_Type_II',
+            'Obesity_Type_III',
+            'Overweight_Level_I',
+            'Overweight_Level_II'
+        ];
+
+        const CATEGORY_CONFIG = {
+            'Insufficient_Weight': {
+                cssClass: 'insuff-weight',
+                displayName: 'Insufficient Weight',
+                description: 'Your BMI suggests you may be underweight. Consider consulting a healthcare provider or nutritionist for guidance on healthy weight gain.'
+            },
+            'Normal_Weight': {
+                cssClass: 'normal-weight',
+                displayName: 'Normal Weight',
+                description: 'Your weight falls within the healthy range. Continue maintaining balanced eating habits and regular physical activity.'
+            },
+            'Overweight_Level_I': {
+                cssClass: 'overweight',
+                displayName: 'Overweight Level I',
+                description: 'Your BMI indicates you are in the overweight range. Consider adopting healthier eating habits and increasing physical activity.'
+            },
+            'Overweight_Level_II': {
+                cssClass: 'overweight',
+                displayName: 'Overweight Level II',
+                description: 'Your BMI indicates you are in the overweight range. A healthcare provider can help you create a personalized plan for healthier habits.'
+            },
+            'Obesity_Type_I': {
+                cssClass: 'obesity',
+                displayName: 'Obesity Type I',
+                description: 'Your BMI indicates obesity. We recommend consulting a healthcare provider for professional guidance and a tailored health plan.'
+            },
+            'Obesity_Type_II': {
+                cssClass: 'obesity',
+                displayName: 'Obesity Type II',
+                description: 'Your BMI indicates obesity. We strongly recommend consulting a healthcare provider for professional guidance and support.'
+            },
+            'Obesity_Type_III': {
+                cssClass: 'obesity',
+                displayName: 'Obesity Type III',
+                description: 'Your BMI indicates severe obesity. Please consult a healthcare provider for comprehensive evaluation and support.'
+            }
+        };
+
+        function getCategoryFromPrediction(prediction) {
+            if (typeof prediction === 'string' && CATEGORY_CONFIG[prediction]) {
+                return prediction;
+            }
+            const idx = parseInt(prediction, 10);
+            if (!isNaN(idx) && idx >= 0 && idx < CATEGORY_LABELS.length) {
+                return CATEGORY_LABELS[idx];
+            }
+            return null;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            resultCard.classList.remove('visible');
+            errorMessage.classList.remove('visible');
+
+            const formData = new FormData(form);
+            const payload = {
+                Age: parseFloat(formData.get('Age')),
+                Height: parseFloat(formData.get('Height')),
+                Weight: parseFloat(formData.get('Weight')),
+                family_history: formData.get('family_history'),
+                FAVC: formData.get('FAVC'),
+                FCVC: parseFloat(formData.get('FCVC')),
+                CAEC: formData.get('CAEC'),
+                CH2O: parseFloat(formData.get('CH2O')),
+                SCC: formData.get('SCC'),
+                FAF: parseFloat(formData.get('FAF')),
+                TUE: parseFloat(formData.get('TUE')),
+                CALC: formData.get('CALC'),
+                MTRANS: formData.get('MTRANS')
+            };
+
+            submitBtn.disabled = true;
+            form.classList.add('loading');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail ? JSON.stringify(data.detail) : 'Prediction failed');
+                }
+
+                const category = getCategoryFromPrediction(data.prediction);
+                if (!category || !CATEGORY_CONFIG[category]) {
+                    throw new Error('Unknown prediction result: ' + data.prediction);
+                }
+
+                const config = CATEGORY_CONFIG[category];
+
+                resultCard.className = 'result-card visible ' + config.cssClass;
+                resultLabel.textContent = 'Prediction';
+                resultTitle.textContent = config.displayName;
+                resultText.textContent = config.description;
+
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (err) {
+                errorMessage.textContent = 'Error: ' + (err.message || 'Could not get prediction. Please try again.');
+                errorMessage.classList.add('visible');
+            } finally {
+                submitBtn.disabled = false;
+                form.classList.remove('loading');
+            }
+        });
+    </script>
+</body>
+</html>
