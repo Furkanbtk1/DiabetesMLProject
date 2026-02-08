@@ -1,28 +1,27 @@
 # Diabetes & Obesity Risk Prediction Project 🩺
 
-Bu proje, bireylerin fiziksel özelliklerine ve günlük yaşam alışkanlıklarına dayanarak obezite seviyelerini ve dolaylı sağlık risklerini (diyabet risk faktörleri gibi) tahmin etmek amacıyla geliştirilmiştir.
+This project is a machine learning-based application designed to predict obesity levels and associated health risks (such as diabetes risk factors) based on an individual's physical characteristics and daily habits.
 
-## 🚀 Proje Hakkında
-Makine öğrenmesi odaklı bu çalışma, veri setindeki 17 farklı parametreyi (yaş, boy, kilo, beslenme alışkanlıkları, fiziksel aktivite vb.) analiz ederek kullanıcıyı uygun bir sağlık kategorisine yerleştirir. Model, modern bir web arayüzü ile entegre edilerek son kullanıcıya sunulmuştur.
+## 🚀 Project Overview
+The model analyzes 17 different parameters including age, height, weight, dietary habits, and physical activity to classify users into specific health categories. The project is integrated into a web interface for real-time predictions.
 
-## 📊 Model Performansı
-Projede **Random Forest Classifier** kullanılmış olup, yapılan testler sonucunda aşağıdaki başarı metrikleri elde edilmiştir:
-- **Doğruluk (Accuracy):** %96
-- **Model:** Rastgele Orman (Random Forest)
-- **Veri Seti:** 2111 kayıt ve 17 öznitelik.
+## 📊 Model Performance
+The core of this project is a **Random Forest Classifier** which achieved high performance during testing:
+- **Accuracy:** 96%
+- **Algorithm:** Random Forest
+- **Dataset:** 2111 records with 17 features.
 
-## 🛠️ Kullanılan Teknolojiler
-- **Python** (Veri işleme ve Model eğitimi)
-- **Pandas & NumPy** (Veri manipülasyonu)
-- **Matplotlib & Seaborn** (Veri görselleştirme)
-- **Scikit-learn** (Makine öğrenmesi algoritmaları)
-- **Web Framework:** [Buraya kullandığın aracı yaz: Flask / Streamlit]
+## 🛠️ Tech Stack
+- **Language:** Python
+- **Data Science:** Pandas, NumPy, Matplotlib, Seaborn
+- **Machine Learning:** Scikit-learn
+- **Web Framework:** FastAPI ⚡
 
-## 📋 Veri Seti Parametreleri
-Tahmin yapılırken kullanılan bazı temel özellikler:
-- **FAVC:** Sık yüksek kalorili yiyecek tüketimi.
-- **FCVC:** Sebze tüketme sıklığı.
-- **NCP:** Ana öğün sayısı.
-- **CAEC:** Öğünler arasında yemek yeme.
-- **CH2O:** Günlük su tüketimi.
-- **FAF:** Fiziksel aktivite sıklığı.
+## 📋 Key Features (Input Data)
+Some of the features used for prediction include:
+- **FAVC:** Frequent consumption of high-calorie food.
+- **FCVC:** Frequency of consumption of vegetables.
+- **NCP:** Number of main meals.
+- **CH2O:** Daily water consumption.
+- **FAF:** Physical activity frequency.
+- **MTRANS:** Mode of transportation used.
