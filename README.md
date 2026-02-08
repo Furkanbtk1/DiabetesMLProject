@@ -8,7 +8,7 @@ The model analyzes 17 different parameters including age, height, weight, dietar
 ## 📊 Model Performance
 The core of this project is a **Random Forest Classifier** which achieved high performance during testing:
 - **Accuracy:** 96%
-- **Algorithm:** Random Forest
+- **Model:** Random Forest
 - **Dataset:** 2111 records with 17 features.
 
 ## 🛠️ Tech Stack
