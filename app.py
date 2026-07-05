@@ -64,4 +64,10 @@ async def predict(features: DiabetesFeatures):
 
     return {"prediction": result}
 
+import os
+import uvicorn
 
+if __name__ == "__main__":
+    # Railway'in atadığı dinamik portu oku, bulamazsa lokalde 8000 kullan
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
